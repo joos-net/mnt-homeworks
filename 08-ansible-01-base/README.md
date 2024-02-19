@@ -74,7 +74,7 @@ docker run -d --name ubuntu pycontribs/ubuntu sleep 10000
 
 5. Напишите скрипт на bash: автоматизируйте поднятие необходимых контейнеров, запуск ansible-playbook и остановку контейнеров.
 
-![25](https://github.com/joos-net/mnt-homeworks/blob/MNT-video/08-ansible-01-base/img/25.png)
+![25](https://github.com/joos-net/mnt-homeworks/blob/MNT-video/08-ansible-01-base/img/251.png)
 
 6. Все изменения должны быть зафиксированы и отправлены в ваш личный репозиторий.
 
