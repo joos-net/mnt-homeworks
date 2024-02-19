@@ -1,4 +1,4 @@
-#/bin/bash
+#!/bin/bash
 #create docker
 docker run -d --name centos7 pycontribs/centos:7 sleep 10000
 docker run -d --name ubuntu pycontribs/ubuntu sleep 10000
