@@ -1,4 +1,44 @@
 ---
+- name: Install Nginx for logs
+  hosts: clickhouse
+  handlers:
+    - name: Nginx service
+      become: true
+      ansible.builtin.service:
+        name: nginx
+        enabled: true
+        state: started
+    - name: Restart nginx
+      become: true
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+
+  tasks:
+    - name: Install EPEL Repo
+      become: true
+      ansible.builtin.yum:
+        name: epel-release
+        state: present
+
+    - name: Install Nginx Web Server on RedHat Family
+      become: true
+      ansible.builtin.yum:
+        name: nginx
+        state: present
+      notify:
+        - Nginx service
+
+    - name: Nginx config
+      become: true
+      ansible.builtin.template:
+        src: ./nginx.conf.j2
+        mode: "0644"
+        dest: "/etc/nginx/nginx.conf"
+      notify:
+        - Restart nginx
+
+############################################################################
 - name: Install Clickhouse
   hosts: clickhouse
   handlers:
@@ -7,18 +47,24 @@
       ansible.builtin.service:
         name: clickhouse-server
         state: restarted
+
   tasks:
-    - block:
+    - name: Block
+      block:
         - name: Get clickhouse distrib
           ansible.builtin.get_url:
             url: "https://packages.clickhouse.com/rpm/stable/{{ item }}-{{ clickhouse_version }}.noarch.rpm"
             dest: "./{{ item }}-{{ clickhouse_version }}.rpm"
+            mode: "0644"
           with_items: "{{ clickhouse_packages }}"
+
       rescue:
         - name: Get clickhouse distrib
           ansible.builtin.get_url:
             url: "https://packages.clickhouse.com/rpm/stable/clickhouse-common-static-{{ clickhouse_version }}.x86_64.rpm"
             dest: "./clickhouse-common-static-{{ clickhouse_version }}.rpm"
+            mode: "0644"
+
     - name: Install clickhouse packages
       become: true
       ansible.builtin.yum:
@@ -27,10 +73,56 @@
           - clickhouse-client-{{ clickhouse_version }}.rpm
           - clickhouse-server-{{ clickhouse_version }}.rpm
       notify: Start clickhouse service
+
     - name: Flush handlers
-      meta: flush_handlers
+      ansible.builtin.meta: flush_handlers
+
+    - name: DB exist
+      ansible.builtin.command: "clickhouse-client -q 'show databases'"
+      register: db_exist
+      changed_when: "'nginxdb' not in db_exist.stdout"
+
     - name: Create database
-      ansible.builtin.command: "clickhouse-client -q 'create database logs;'"
+      ansible.builtin.command: "clickhouse-client -q 'CREATE DATABASE IF NOT EXISTS {{ db_name }};'"
+      when: "'nginxdb' not in db_exist.stdout"
       register: create_db
-      failed_when: create_db.rc != 0 and create_db.rc !=82
       changed_when: create_db.rc == 0
+
+    - name: Create table
+      ansible.builtin.command: "clickhouse-client -q 'CREATE TABLE IF NOT EXISTS  {{ db_name }}.{{ table_name }}\
+       ( message String ) ENGINE = MergeTree() ORDER BY tuple()'"
+      when: "'nginxdb' not in db_exist.stdout"
+      register: create_table
+      changed_when: create_table.rc == 0
+
+########################################################################
+- name: Install Vector
+  hosts: clickhouse
+  handlers:
+    - name: Start vector
+      become: true
+      ansible.builtin.service:
+        name: vector
+        enabled: true
+        state: started
+    - name: Restart vector
+      become: true
+      ansible.builtin.service:
+        name: vector
+        state: restarted
+
+  tasks:
+    - name: Install Vector | YUM install
+      become: true
+      ansible.builtin.yum:
+        name: https://packages.timber.io/vector/{{ vector_version }}/vector-{{ vector_version }}-1.{{ ansible_architecture }}.rpm
+        state: present
+      notify: Start vector
+
+    - name: Configure Vector | Template config
+      become: true
+      ansible.builtin.template:
+        src: ./vector.yml.j2
+        mode: "0644"
+        dest: "{{ vector_config_dir }}/vector.yaml"
+      notify: Restart vector
