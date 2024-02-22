@@ -1,6 +1,7 @@
 ---
 - name: Install Nginx for logs
   hosts: clickhouse
+
   handlers:
     - name: Nginx service
       become: true
@@ -20,12 +21,14 @@
       ansible.builtin.yum:
         name: epel-release
         state: present
+      tags: epel-install
 
     - name: Install Nginx Web Server on RedHat Family
       become: true
       ansible.builtin.yum:
         name: nginx
         state: present
+      tags: nginx-install
       notify:
         - Nginx service
 
@@ -35,12 +38,14 @@
         src: ./nginx.conf.j2
         mode: "0644"
         dest: "/etc/nginx/nginx.conf"
+      tags: nginx-config
       notify:
         - Restart nginx
 
-############################################################################
+####################################################################################################################################################
 - name: Install Clickhouse
   hosts: clickhouse
+
   handlers:
     - name: Start clickhouse service
       become: true
@@ -72,6 +77,7 @@
           - clickhouse-common-static-{{ clickhouse_version }}.rpm
           - clickhouse-client-{{ clickhouse_version }}.rpm
           - clickhouse-server-{{ clickhouse_version }}.rpm
+      tags: clickhouse-install
       notify: Start clickhouse service
 
     - name: Flush handlers
@@ -95,9 +101,10 @@
       register: create_table
       changed_when: create_table.rc == 0
 
-########################################################################
+################################################################################################################################################
 - name: Install Vector
   hosts: clickhouse
+
   handlers:
     - name: Start vector
       become: true
@@ -117,6 +124,7 @@
       ansible.builtin.yum:
         name: https://packages.timber.io/vector/{{ vector_version }}/vector-{{ vector_version }}-1.{{ ansible_architecture }}.rpm
         state: present
+      tags: vector-install
       notify: Start vector
 
     - name: Configure Vector | Template config
@@ -125,4 +133,5 @@
         src: ./vector.yml.j2
         mode: "0644"
         dest: "{{ vector_config_dir }}/vector.yaml"
+      tags: vector-config
       notify: Restart vector
