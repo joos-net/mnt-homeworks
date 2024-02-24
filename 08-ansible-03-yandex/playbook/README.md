@@ -2,7 +2,10 @@
 Репозиторий по установке с помощью Ansible Lighthouse + Clickhouse + Vector для мониторинга логов Nginx
 
 ## Version
-На данный моменет проект имеет основную версию 1.0.0
+На данный моменет проект имеет версии
+- 1.0.0 - CLICKHOUSE + VECTOR + NGINX
+- 1.0.1 - CLICKHOUSE + VECTOR + NGINX + описание
+- 2.0.0 - LIGHTHOUSE + CLICKHOUSE + VECTOR + NGINX
 
 ## Istallation
 Подготовка: для установки необходимо указать в /inventory/prod.yml адреса серверов
