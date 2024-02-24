@@ -1,0 +1,163 @@
+---
+- name: Install Nginx for logs
+  hosts: lighthouse, vector
+
+  handlers:
+    - name: Nginx service
+      become: true
+      ansible.builtin.service:
+        name: nginx
+        enabled: true
+        state: started
+    - name: Restart nginx
+      become: true
+      ansible.builtin.service:
+        name: nginx
+        state: restarted
+
+  tasks:
+    - name: Install EPEL Repo
+      become: true
+      ansible.builtin.yum:
+        name: epel-release
+        state: present
+      tags: epel-install
+
+    - name: Install Nginx Web Server on RedHat Family
+      become: true
+      ansible.builtin.yum:
+        name: nginx
+        state: present
+      tags: nginx-install
+      notify:
+        - Nginx service
+
+    - name: Nginx config
+      become: true
+      ansible.builtin.template:
+        src: ./nginx.conf.j2
+        mode: "0644"
+        dest: "/etc/nginx/nginx.conf"
+      tags: nginx-config
+      when: "'lighthouse' in inventory_hostname"
+      notify:
+        - Restart nginx
+####################################################################################
+- name: Install Lighthouse
+  hosts: lighthouse
+  pre_tasks:
+    - name: Lighthouse | Install dependencies
+      become: true
+      ansible.builtin.yum:
+        name: git
+        state: present
+      tags: git-install
+  tasks:
+    - name: Lighthouse | Copy from git
+      become: true
+      ansible.builtin.git:
+        repo: "https://github.com/VKCOM/lighthouse.git"
+        version: master
+        dest: "/etc/lighthouse"
+      tags: lighthouse-install
+
+####################################################################################################################################################
+- name: Install Clickhouse
+  hosts: clickhouse
+
+  handlers:
+    - name: Start clickhouse service
+      become: true
+      ansible.builtin.service:
+        name: clickhouse-server
+        state: restarted
+
+  tasks:
+    - name: Block
+      block:
+        - name: Get clickhouse distrib
+          ansible.builtin.get_url:
+            url: "https://packages.clickhouse.com/rpm/stable/{{ item }}-{{ clickhouse_version }}.noarch.rpm"
+            dest: "./{{ item }}-{{ clickhouse_version }}.rpm"
+            mode: "0644"
+          with_items: "{{ clickhouse_packages }}"
+
+      rescue:
+        - name: Get clickhouse distrib
+          ansible.builtin.get_url:
+            url: "https://packages.clickhouse.com/rpm/stable/clickhouse-common-static-{{ clickhouse_version }}.x86_64.rpm"
+            dest: "./clickhouse-common-static-{{ clickhouse_version }}.rpm"
+            mode: "0644"
+
+    - name: Install clickhouse packages
+      become: true
+      ansible.builtin.yum:
+        name:
+          - clickhouse-common-static-{{ clickhouse_version }}.rpm
+          - clickhouse-client-{{ clickhouse_version }}.rpm
+          - clickhouse-server-{{ clickhouse_version }}.rpm
+      tags: clickhouse-install
+      notify: Start clickhouse service
+
+    - name: Flush handlers
+      ansible.builtin.meta: flush_handlers
+
+    - name: Clickhouse config
+      become: true
+      ansible.builtin.replace:
+        path: "/etc/clickhouse-server/config.xml"
+        regexp: '<!-- <listen_host>0.0.0.0</listen_host> -->'
+        replace: '<listen_host>0.0.0.0</listen_host>'
+
+    - name: DB exist
+      ansible.builtin.command: "clickhouse-client -h 127.0.0.1 -q 'show databases'"
+      register: db_exist
+      changed_when: "'nginxdb' not in db_exist.stdout"
+
+    - name: Create database
+      ansible.builtin.command: "clickhouse-client -h 127.0.0.1 -q 'CREATE DATABASE IF NOT EXISTS {{ db_name }};'"
+      when: "'nginxdb' not in db_exist.stdout"
+      register: create_db
+      changed_when: create_db.rc == 0
+
+    - name: Create table
+      ansible.builtin.command: "clickhouse-client -h 127.0.0.1 -q 'CREATE TABLE IF NOT EXISTS \
+       {{ db_name }}.{{ table_name }} ( message String ) ENGINE = MergeTree() ORDER BY tuple()'"
+      when: "'nginxdb' not in db_exist.stdout"
+      register: create_table
+      changed_when: create_table.rc == 0
+
+################################################################################################################################################
+- name: Install Vector
+  hosts: vector
+
+  handlers:
+    - name: Start vector
+      become: true
+      ansible.builtin.service:
+        name: vector
+        enabled: true
+        state: started
+    - name: Restart vector
+      become: true
+      ansible.builtin.service:
+        name: vector
+        state: restarted
+
+  tasks:
+    - name: Install Vector | YUM install
+      become: true
+      ansible.builtin.yum:
+        name: https://packages.timber.io/vector/{{ vector_version }}/vector-{{ vector_version }}-1.{{ ansible_architecture }}.rpm
+        state: present
+      tags: vector-install
+      notify: Start vector
+
+    - name: Configure Vector | Template config
+      become: true
+      ansible.builtin.template:
+        src: ./vector.yml.j2
+        mode: "0644"
+        dest: "{{ vector_config_dir }}/vector.yaml"
+      tags: vector-config
+      notify: Restart vector
