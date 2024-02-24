@@ -30,6 +30,9 @@
 ![82](https://github.com/joos-net/mnt-homeworks/blob/master/08-ansible-03-yandex/img/82.png)
 
 9. Подготовьте README.md-файл по своему playbook. В нём должно быть описано: что делает playbook, какие у него есть параметры и теги.
+
+[README](https://github.com/joos-net/mnt-homeworks/blob/master/08-ansible-03-yandex/playbook/README.md)
+
 10. Готовый playbook выложите в свой репозиторий, поставьте тег `08-ansible-03-yandex` на фиксирующий коммит, в ответ предоставьте ссылку на него.
 
 ---
