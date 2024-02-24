@@ -1,13 +1,14 @@
-## NGINX + CLICKHOUSE + VECTOR
-Репозиторий по установке с помощью Ansible Clickhouse + Vector для мониторинга логов Nginx
+## LIGHTHOUSE + CLICKHOUSE + VECTOR + NGINX
+Репозиторий по установке с помощью Ansible Lighthouse + Clickhouse + Vector для мониторинга логов Nginx
 
 ## Version
 На данный моменет проект имеет основную версию 1.0.0
 
-Версия 1.0.1 включает в себя примеры и описание проекта
-
 ## Istallation
-Подготовка: для установки необходимо указать в /inventory/prod.yml адрес сервера
+Подготовка: для установки необходимо указать в /inventory/prod.yml адреса серверов
+- Clickhouse
+- Lighthouse
+- Vector
 
 В процессе выполнения будет установлены:
 - EPEL Repo
@@ -16,20 +17,27 @@
   - создана база (/group_vars/clickhouse/vars.yml - db_name)
   - создана таблица (/group_vars/clickhouse/vars.yml - table_name)
 - Vector (0.36.0)
+- Lighthouse
+- Git
 
 И настроены:
-- nginx (nginx.conf.j2)
-  - сохранение access.log в /var/log/nginx/my_access.log
+- Clichhouse
+  - разрешен доступ со всех ip адресов
 - Vector (vector.yml.j2)
-  - сбор логов /var/log/nginx/my_access.log
-  - подключение к clickhouse по http://127.0.0.1:8123
- 
+  - сбор логов /var/log/nginx/access.log
+  - подключение к clickhouse по http://{{ clickhouse-ip }}:8123
+- Lighthouse
+  - сохранение в /etc/lighthouse
+- nginx (nginx.conf.j2)
+  - изменение основного пути на /etc/lighthouse
+  
 ## Configure
-Используйте файл /group_vars/clickhouse/vars.yml для изменения значений по умолчанию.
+- Используйте файл /group_vars/clickhouse/vars.yml для изменения значений Clickhouse по умолчанию.
+- /group_vars/vector/vars.yml для изменения значений Vector по умолчанию.
 
 ## Install
 ```
-ansible-playbook -i inventory/prod.yml -u <username> site.yml
+ansible-playbook site.yml
 ```
 
 ## Tags
@@ -37,6 +45,8 @@ ansible-playbook -i inventory/prod.yml -u <username> site.yml
 - nginx-install - установка nginx
 - clickhouse-install - установка clickhouse
 - vector-install - установка vector
+- git-install - установка git
+- lighthouse-install - установка lighthouse
 
 - nginx-config - настройка nginx
 - vector-config - настройка vector
