@@ -1,0 +1,28 @@
+---
+# tasks file for nginx-role
+  - name: Install EPEL Repo
+    become: true
+    ansible.builtin.yum:
+      name: epel-release
+      state: present
+    tags: epel-install
+
+  - name: Install Nginx Web Server on RedHat Family
+    become: true
+    ansible.builtin.yum:
+      name: nginx
+      state: present
+    tags: nginx-install
+    notify:
+      - Nginx service
+
+  - name: Nginx config
+    become: true
+    ansible.builtin.template:
+      src: nginx.conf.j2
+      mode: "0644"
+      dest: "/etc/nginx/nginx.conf"
+    tags: nginx-config
+    when: "'lighthouse' in inventory_hostname"
+    notify:
+      - Restart nginx

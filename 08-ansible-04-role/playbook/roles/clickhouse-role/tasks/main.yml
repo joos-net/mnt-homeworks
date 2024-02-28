@@ -1,0 +1,55 @@
+---
+# tasks file for clickhouse-role
+  - name: Block
+    block:
+      - name: Get clickhouse distrib
+        ansible.builtin.get_url:
+          url: "https://packages.clickhouse.com/rpm/stable/{{ item }}-{{ clickhouse_version }}.noarch.rpm"
+          dest: "./{{ item }}-{{ clickhouse_version }}.rpm"
+          mode: "0644"
+        with_items: "{{ clickhouse_packages }}"
+
+    rescue:
+      - name: Get clickhouse distrib
+        ansible.builtin.get_url:
+          url: "https://packages.clickhouse.com/rpm/stable/clickhouse-common-static-{{ clickhouse_version }}.x86_64.rpm"
+          dest: "./clickhouse-common-static-{{ clickhouse_version }}.rpm"
+          mode: "0644"
+
+  - name: Install clickhouse packages
+    become: true
+    ansible.builtin.yum:
+      name:
+        - clickhouse-common-static-{{ clickhouse_version }}.rpm
+        - clickhouse-client-{{ clickhouse_version }}.rpm
+        - clickhouse-server-{{ clickhouse_version }}.rpm
+    tags: clickhouse-install
+    notify: Start clickhouse service
+
+  - name: Flush handlers
+    ansible.builtin.meta: flush_handlers
+
+  - name: Clickhouse config
+    become: true
+    ansible.builtin.replace:
+      path: "/etc/clickhouse-server/config.xml"
+      regexp: '<!-- <listen_host>0.0.0.0</listen_host> -->'
+      replace: '<listen_host>0.0.0.0</listen_host>'
+
+  - name: DB exist
+    ansible.builtin.command: "clickhouse-client -h 127.0.0.1 -q 'show databases'"
+    register: db_exist
+    changed_when: "'nginxdb' not in db_exist.stdout"
+
+  - name: Create database
+    ansible.builtin.command: "clickhouse-client -h 127.0.0.1 -q 'CREATE DATABASE IF NOT EXISTS {{ db_name }};'"
+    when: "'nginxdb' not in db_exist.stdout"
+    register: create_db
+    changed_when: create_db.rc == 0
+
+  - name: Create table
+    ansible.builtin.command: "clickhouse-client -h 127.0.0.1 -q 'CREATE TABLE IF NOT EXISTS \
+      {{ db_name }}.{{ table_name }} ( message String ) ENGINE = MergeTree() ORDER BY tuple()'"
+    when: "'nginxdb' not in db_exist.stdout"
+    register: create_table
+    changed_when: create_table.rc == 0
