@@ -1,0 +1,23 @@
+---
+# tasks file for vector-role
+  # - name: Install RPM
+  #   become: true
+  #   ansible.builtin.shell:
+  #     cmd: "rpm -i https://yum.vector.dev/stable/vector-0/x86_64/vector-0.36.0-1.x86_64.rpm"
+  #   ignore_errors: true
+
+  - name: Install Vector | YUM install
+    become: true
+    ansible.builtin.yum:
+      #name: https://packages.timber.io/vector/{{ vector_version }}/vector-0.36.0-1.x86_64.rpm
+      name: https://yum.vector.dev/stable/vector-0/x86_64/vector-0.36.0-1.x86_64.rpm
+      state: present
+    tags: vector-install
+
+  - name: Configure Vector | Template config
+    become: true
+    ansible.builtin.template:
+      src: vector.yml.j2
+      mode: "0644"
+      dest: "{{ vector_config_dir }}/vector.yaml"
+    tags: vector-config

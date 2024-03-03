@@ -1,0 +1,20 @@
+---
+  - src: git@github.com:joos-net/clickhouse-role.git
+    scm: git
+    version: "1.0.0"
+    name: clickhouse-role
+
+  - src: git@github.com:joos-net/nginx-role.git
+    scm: git
+    version: "1.0.0"
+    name: nginx-role 
+
+  - src: git@github.com:joos-net/lighthouse-role.git
+    scm: git
+    version: "1.0.0"
+    name: lighthouse-role
+
+  - src: git@github.com:joos-net/vector-role.git
+    scm: git
+    version: "1.0.0"
+    name: vector-role

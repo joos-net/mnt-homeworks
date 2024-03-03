@@ -1,0 +1,16 @@
+---
+# tasks file for lighthouse-role
+  - name: Lighthouse | Install dependencies
+    become: true
+    ansible.builtin.yum:
+      name: git
+      state: present
+    tags: git-install
+
+  - name: Lighthouse | Copy from git
+    become: true
+    ansible.builtin.git:
+      repo: "https://github.com/VKCOM/lighthouse.git"
+      version: master
+      dest: "/etc/lighthouse"
+    tags: lighthouse-install

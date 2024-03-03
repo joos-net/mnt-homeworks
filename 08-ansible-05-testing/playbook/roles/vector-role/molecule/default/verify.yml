@@ -1,0 +1,23 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+  tasks:
+    - name: Retrieve information from path '/etc/vector/vector.yaml'
+      ansible.builtin.stat:
+        path: "/etc/vector/vector.yaml"
+      register: remote_file
+    - name: Assert that '/etc/vector/vector.yaml' file is created correctly
+      ansible.builtin.assert:
+        that:
+          - "remote_file.stat.exists"
+          - "remote_file.stat.readable"
+          - "remote_file.stat.path == '/etc/vector/vector.yaml'"
+    - name: Check vector
+      ansible.builtin.shell:
+        cmd: "yum list installed | grep vector"
+      register: vector_install
+    - name: Check vector is installed
+      ansible.builtin.assert:
+        that:
+          - "vector_install.stdout[:13] == 'vector.x86_64'"

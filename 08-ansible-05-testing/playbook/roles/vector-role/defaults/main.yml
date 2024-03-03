@@ -1,0 +1,7 @@
+---
+# defaults file for vector-role
+vector_version: "0.36.0"
+db_name: nginxdb
+table_name: access_logs
+endpoint: "192.168.0.1"
+#endpoint: hostvars['clickhouse-01']['ansible_host']

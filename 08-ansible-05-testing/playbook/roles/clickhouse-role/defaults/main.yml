@@ -1,0 +1,6 @@
+---
+# defaults file for clickhouse-role
+clickhouse_version: "22.3.3.44"
+
+db_name: nginxdb
+table_name: access_logs

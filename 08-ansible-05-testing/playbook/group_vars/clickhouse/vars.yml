@@ -1,0 +1,12 @@
+---
+clickhouse_version: "22.3.3.44"
+clickhouse_packages:
+  - clickhouse-client
+  - clickhouse-server
+  - clickhouse-common-static
+
+db_name: nginxdb
+table_name: access_logs
+
+vector_version: "0.36.0"
+vector_config_dir: "/etc/vector"
