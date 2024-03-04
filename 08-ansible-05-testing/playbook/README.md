@@ -6,6 +6,8 @@
 - 1.0.0 - CLICKHOUSE + VECTOR + NGINX
 - 1.0.1 - CLICKHOUSE + VECTOR + NGINX + описание
 - 2.0.0 - LIGHTHOUSE + CLICKHOUSE + VECTOR + NGINX
+- 2.1.0 - VECTOR + MOLECULE
+- 2.2.0 - VECTOR + MOLECULE + TOX
 
 ## Istallation
 Подготовка: для установки необходимо указать в /inventory/prod.yml адреса серверов
