@@ -162,9 +162,13 @@ if __name__ == '__main__':
 
 **Шаг 4.** Проверьте module на исполняемость локально.
 
+![1](https://github.com/joos-net/mnt-homeworks/blob/master/08-ansible-06-module/img/1.png)
+
 **Шаг 5.** Напишите single task playbook и используйте module в нём.
 
 **Шаг 6.** Проверьте через playbook на идемпотентность.
+
+![2](https://github.com/joos-net/mnt-homeworks/blob/master/08-ansible-06-module/img/2.png)
 
 **Шаг 7.** Выйдите из виртуального окружения.
 
@@ -186,7 +190,11 @@ if __name__ == '__main__':
 
 **Шаг 16.** Запустите playbook, убедитесь, что он работает.
 
+![4](https://github.com/joos-net/mnt-homeworks/blob/master/08-ansible-06-module/img/4.png)
+
 **Шаг 17.** В ответ необходимо прислать ссылки на collection и tar.gz архив, а также скриншоты выполнения пунктов 4, 6, 15 и 16.
+
+[Collection](https://github.com/joos-net/my_own_collection)
 
 ## Необязательная часть
 
