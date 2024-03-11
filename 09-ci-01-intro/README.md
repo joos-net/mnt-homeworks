@@ -30,11 +30,25 @@
 **Что нужно сделать**
 
 1. Создайте задачу с типом bug, попытайтесь провести его по всему workflow до Done. 
-1. Создайте задачу с типом epic, к ней привяжите несколько задач с типом task, проведите их по всему workflow до Done. 
-1. При проведении обеих задач по статусам используйте kanban. 
-1. Верните задачи в статус Open.
-1. Перейдите в Scrum, запланируйте новый спринт, состоящий из задач эпика и одного бага, стартуйте спринт, проведите задачи до состояния Closed. Закройте спринт.
-2. Если всё отработалось в рамках ожидания — выгрузите схемы workflow для импорта в XML. Файлы с workflow и скриншоты workflow приложите к решению задания.
+2. Создайте задачу с типом epic, к ней привяжите несколько задач с типом task, проведите их по всему workflow до Done. 
+3. При проведении обеих задач по статусам используйте kanban. 
+
+![k1](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-01-intro/img/k1.png)
+![k2](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-01-intro/img/k2.png)
+![k3](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-01-intro/img/k3.png)
+
+4. Верните задачи в статус Open.
+5. Перейдите в Scrum, запланируйте новый спринт, состоящий из задач эпика и одного бага, стартуйте спринт, проведите задачи до состояния Closed. Закройте спринт.
+
+![s1](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-01-intro/img/s1.png)
+![s2](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-01-intro/img/s2.png)
+![s3](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-01-intro/img/s3.png)
+
+6. Если всё отработалось в рамках ожидания — выгрузите схемы workflow для импорта в XML. Файлы с workflow и скриншоты workflow приложите к решению задания.
+
+![1](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-01-intro/img/1.png)
+
+![2](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-01-intro/img/2.png)
 
 ---
 
