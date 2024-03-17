@@ -21,9 +21,12 @@
 4. Проверьте `sonar-scanner --version`.
 5. Запустите анализатор против кода из директории [example](./example) с дополнительным ключом `-Dsonar.coverage.exclusions=fail.py`.
 6. Посмотрите результат в интерфейсе.
+![mv1](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-03-cicd/img/sq1.png)
 7. Исправьте ошибки, которые он выявил, включая warnings.
 8. Запустите анализатор повторно — проверьте, что QG пройдены успешно.
 9. Сделайте скриншот успешного прохождения анализа, приложите к решению ДЗ.
+![mv3](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-03-cicd/img/sq3.png)
+![mv2](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-03-cicd/img/sq2.png)
 
 ## Знакомство с Nexus
 
@@ -39,7 +42,9 @@
    
 2. В него же загрузите такой же артефакт, но с version: 8_102.
 3. Проверьте, что все файлы загрузились успешно.
+![n1](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-03-cicd/img/n1.png)
 4. В ответе пришлите файл `maven-metadata.xml` для этого артефекта.
+![maven](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-03-cicd/img/maven-metadata.png)
 
 ### Знакомство с Maven
 
@@ -55,9 +60,11 @@
 
 1. Поменяйте в `pom.xml` блок с зависимостями под ваш артефакт из первого пункта задания для Nexus (java с версией 8_282).
 2. Запустите команду `mvn package` в директории с `pom.xml`, ожидайте успешного окончания.
+![n2](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-03-cicd/img/n2.png)
 3. Проверьте директорию `~/.m2/repository/`, найдите ваш артефакт.
+![n3](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-03-cicd/img/n3.png)
 4. В ответе пришлите исправленный файл `pom.xml`.
-
+![pom](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-03-cicd/img/pom.png)
 ---
 
 ### Как оформить решение задания
