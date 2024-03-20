@@ -59,6 +59,37 @@
 
 2. Создать Scripted Pipeline так, чтобы он мог сначала запустить через Yandex Cloud CLI необходимое количество инстансов, прописать их в инвентори плейбука и после этого запускать плейбук. Мы должны при нажатии кнопки получить готовую к использованию систему.
 
+```yml
+node("yandex"){
+        stage("Create VM"){
+        sh '''#!/bin/bash
+        for ((i=1;i<=$count;i++)); do yc compute instance create \
+  --name vm-$i \
+  --zone ru-central1-b \
+  --network-interface subnet-name=subnet1,nat-ip-version=ipv4 \
+  --create-boot-disk image-folder-id=standard-images,image-family=centos-7 \
+  --ssh-key ~/.ssh/id_rsa.pub; done'''
+        }
+        stage("Git"){
+            git url: 'https://github.com/joos-net/nginx-role.git'
+            sh 'ls -la'
+        }
+        stage("Inventory"){
+            sh '''#!/bin/bash
+            for ((i=1;i<=$count;i++)); do yc compute instance get --name vm-$i | grep address | tail -n 1 | sed s/address:// | sed 's/ //g' >> hosts; done'''
+            sh 'cat hosts'
+            sh 'sleep 30'
+        }
+        stage("Ansible"){
+            sh 'ansible-playbook ping.yml'
+        }
+}
+```
+![y1](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-04-jenkins/img/y1.png)
+![y2](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-04-jenkins/img/y2.png)
+![y3](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-04-jenkins/img/y3.png)
+![y4](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-04-jenkins/img/y4.png)
+
 ---
 
 ### Как оформить решение задания
