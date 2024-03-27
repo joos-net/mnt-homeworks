@@ -27,6 +27,30 @@
 6. Точка вызова: запуск скрипта.
 7. При комите в любую ветку должен собираться docker image с форматом имени hello:gitlab-$CI_COMMIT_SHORT_SHA . Образ должен быть выложен в Gitlab registry или yandex registry.   
 
+Dockerfile
+```Dockerfile
+FROM centos/python-38-centos7
+COPY requirements.txt requirements.txt
+RUN pip3 install -r requirements.txt
+RUN mkdir python_api
+COPY python-api.py /python_api/python-api.py
+CMD ["python3","/python_api/python-api.py"]
+```
+
+.gitlab-ci.yml
+```yml
+stages:
+    - deploy
+
+deployer:
+    stage: deploy
+    script:
+        - docker build -t $CI_REGISTRY/joos/netology/gitlab-$CI_COMMIT_SHORT_SHA .
+        - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - docker push $CI_REGISTRY/joos/netology/gitlab-$CI_COMMIT_SHORT_SHA
+```
+![1](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-06-gitlab/img/1.png)
+
 ### Product Owner
 
 Вашему проекту нужна бизнесовая доработка: нужно поменять JSON ответа на вызов метода GET `/rest/api/get_info`, необходимо создать Issue в котором указать:
@@ -34,6 +58,8 @@
 1. Какой метод необходимо исправить.
 2. Текст с `{ "message": "Already started" }` на `{ "message": "Running"}`.
 3. Issue поставить label: feature.
+
+![2](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-06-gitlab/img/2.png)
 
 ### Developer
 
@@ -43,6 +69,9 @@
 2. Внести изменения по тексту из задания.
 3. Подготовить Merge Request, влить необходимые изменения в `master`, проверить, что сборка прошла успешно.
 
+![3](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-06-gitlab/img/3.png)
+
+![4](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-06-gitlab/img/4.png)
 
 ### Tester
 
@@ -50,6 +79,10 @@
 
 1. Поднять докер-контейнер с образом `python-api:latest` и проверить возврат метода на корректность.
 2. Закрыть Issue с комментарием об успешности прохождения, указав желаемый результат и фактически достигнутый.
+
+![6](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-06-gitlab/img/6.png)
+
+![5](https://github.com/joos-net/mnt-homeworks/blob/master/09-ci-06-gitlab/img/5.png)
 
 ## Итог
 
