@@ -26,6 +26,8 @@
 3. Подключите поднятый вами prometheus, как источник данных.
 4. Решение домашнего задания — скриншот веб-интерфейса grafana со списком подключенных Datasource.
 
+![1](https://github.com/joos-net/mnt-homeworks/blob/master/10-monitoring-03-grafana/img/1.png)
+
 ## Задание 2
 
 Изучите самостоятельно ресурсы:
@@ -54,10 +56,16 @@ node_filesystem_free_bytes{device="/dev/vda1"}
 ```
 Для решения этого задания приведите promql-запросы для выдачи этих метрик, а также скриншот получившейся Dashboard.
 
+![2](https://github.com/joos-net/mnt-homeworks/blob/master/10-monitoring-03-grafana/img/2.png)
+
 ## Задание 3
 
 1. Создайте для каждой Dashboard подходящее правило alert — можно обратиться к первой лекции в блоке «Мониторинг».
 2. В качестве решения задания приведите скриншот вашей итоговой Dashboard.
+
+![3](https://github.com/joos-net/mnt-homeworks/blob/master/10-monitoring-03-grafana/img/3.png)
+![4](https://github.com/joos-net/mnt-homeworks/blob/master/10-monitoring-03-grafana/img/4.png)
+![5](https://github.com/joos-net/mnt-homeworks/blob/master/10-monitoring-03-grafana/img/5.png)
 
 ## Задание 4
 
@@ -67,7 +75,7 @@ node_filesystem_free_bytes{device="/dev/vda1"}
 <details>
   <summary>JSON</summary>
 
-```
+```json
 {
   "annotations": {
     "list": [
