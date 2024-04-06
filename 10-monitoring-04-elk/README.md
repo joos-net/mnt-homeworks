@@ -40,19 +40,22 @@ Filebeat следует сконфигурировать для отправки
 Результатом выполнения задания должны быть:
 
 - скриншот `docker ps` через 5 минут после старта всех контейнеров (их должно быть 5);
+![1](https://github.com/joos-net/mnt-homeworks/blob/master/10-monitoring-04-elk/img/1.png)
 - скриншот интерфейса kibana;
+![2](https://github.com/joos-net/mnt-homeworks/blob/master/10-monitoring-04-elk/img/2.png)
 - docker-compose манифест (если вы не использовали директорию help);
 - ваши yml-конфигурации для стека (если вы не использовали директорию help).
 
 ## Задание 2
 
 Перейдите в меню [создания index-patterns  в kibana](http://localhost:5601/app/management/kibana/indexPatterns/create) и создайте несколько index-patterns из имеющихся.
-
+![3](https://github.com/joos-net/mnt-homeworks/blob/master/10-monitoring-04-elk/img/3.png)
 Перейдите в меню просмотра логов в kibana (Discover) и самостоятельно изучите, как отображаются логи и как производить поиск по логам.
-
+![4](https://github.com/joos-net/mnt-homeworks/blob/master/10-monitoring-04-elk/img/4.png)
 В манифесте директории help также приведенно dummy-приложение, которое генерирует рандомные события в stdout-контейнера.
 Эти логи должны порождать индекс logstash-* в elasticsearch. Если этого индекса нет — воспользуйтесь советами и источниками из раздела «Дополнительные ссылки» этого задания.
- 
+![5](https://github.com/joos-net/mnt-homeworks/blob/master/10-monitoring-04-elk/img/5.png)
+
 ---
 
 ### Как оформить решение задания
