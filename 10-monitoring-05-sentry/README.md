@@ -30,6 +30,8 @@ Free Cloud account имеет ограничения:
 
 ![2](https://github.com/joos-net/mnt-homeworks/blob/master/10-monitoring-05-sentry/img/2.png)
 
+![4](https://github.com/joos-net/mnt-homeworks/blob/master/10-monitoring-05-sentry/img/4.png)
+
 ## Задание 3
 
 1. Перейдите в создание правил алёртинга.
